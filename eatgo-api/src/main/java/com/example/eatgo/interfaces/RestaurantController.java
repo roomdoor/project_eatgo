@@ -14,6 +14,7 @@ import java.util.List;
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
+    private String name;
 
     public RestaurantController(RestaurantService restaurantService) {
         this.restaurantService = restaurantService;
@@ -27,18 +28,28 @@ public class RestaurantController {
 
     @GetMapping("/restaurants/{id}")
     public Restaurant info(@PathVariable("id") Long id) {
-
         return restaurantService.getRestaurant(id);
     }
 
     @PostMapping("/restaurants")
-    public ResponseEntity<?> create(@RequestBody Restaurant resource) throws URISyntaxException {
-        String name = resource.getName();
-        String address = resource.getAddress();
-        Restaurant restaurant = new Restaurant(1000L, name, address);
+    public ResponseEntity<?> create(@RequestBody Restaurant resource)
+            throws URISyntaxException {
+        Restaurant restaurant = Restaurant.builder()
+                .name(resource.getName())
+                .address(resource.getAddress())
+                .build();
+
         restaurantService.addRestaurant(restaurant);
 
-        URI location = new URI("/restaurant/" + restaurant.getId());
+        URI location = new URI("/restaurants/" + restaurant.getId());
         return ResponseEntity.created(location).body("{}");
+    }
+
+    @PatchMapping("/restaurants/{id}")
+    public String update(@PathVariable("id") Long id,
+                         @RequestBody Restaurant restaurant) {
+
+        restaurantService.updateRestaurant(id, restaurant.getName(), restaurant.getAddress());
+        return "{}";
     }
 }

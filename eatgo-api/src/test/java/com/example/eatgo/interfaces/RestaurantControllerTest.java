@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.core.StringContains.containsString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -36,8 +37,22 @@ public class RestaurantControllerTest {
     @Test
     public void list() throws Exception {
         List<Restaurant> restaurants = new ArrayList<>();
-        restaurants.add(new Restaurant(100L, "chicken", "Seoul"));
-        restaurants.add(new Restaurant(200L, "zzimdark", "Seoul"));
+        Restaurant restaurant1 =
+                Restaurant.builder()
+                        .id(100L)
+                        .name("chicken")
+                        .address("Seoul")
+                        .build();
+
+        restaurant1.setMenuItems(List.of(new MenuItem("fried")));
+        Restaurant restaurant2 = Restaurant.builder()
+                .id(200L)
+                .name("zzimdark")
+                .address("Seoul")
+                .build();
+
+        restaurants.add(restaurant1);
+        restaurants.add(restaurant2);
 
         given(restaurantService.getRestaurants()).willReturn(restaurants);
 
@@ -53,15 +68,25 @@ public class RestaurantControllerTest {
                         containsString("\"name\":\"zzimdark\""))
                 )
         ;
-
     }
 
     @DisplayName("2. store info")
     @Test
     void test_1() throws Exception {
-        Restaurant restaurant1 = new Restaurant(100L, "chicken", "Seoul");
-        restaurant1.addMenuItem(new MenuItem("fried"));
-        Restaurant restaurant2 = new Restaurant(200L, "zzimdark", "Seoul");
+        Restaurant restaurant1 =
+                Restaurant.builder()
+                        .id(100L)
+                        .name("chicken")
+                        .address("Seoul")
+                        .menuItems(List.of(new MenuItem("fried")))
+                        .build();
+
+        restaurant1.setMenuItems(List.of(new MenuItem("fried")));
+        Restaurant restaurant2 = Restaurant.builder()
+                .id(200L)
+                .name("zzimdark")
+                .address("Seoul")
+                .build();
 
         given(restaurantService.getRestaurant(100L)).willReturn(restaurant1);
         given(restaurantService.getRestaurant(200L)).willReturn(restaurant2);
@@ -90,17 +115,36 @@ public class RestaurantControllerTest {
     @DisplayName("3. create")
     @Test
     void test_3() throws Exception {
-        Restaurant restaurant = new Restaurant(1000L, "버거킹", "등촌점");
+        given(restaurantService.addRestaurant(any())).will(invocation -> {
+            Restaurant restaurant = invocation.getArgument(0);
+            return Restaurant.builder()
+                    .id(1000L)
+                    .name(restaurant.getName())
+                    .address(restaurant.getAddress())
+                    .build();
+        });
 
         mvc.perform(MockMvcRequestBuilders.post("/restaurants")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"버거킹\",\"address\":\"등촌점\"}")
                 )
                 .andExpect(status().isCreated())
-                .andExpect(header().string("location", "/restaurant/1000"))
-                .andExpect(content().string("{}"))
-        ;
-        verify(restaurantService).addRestaurant(restaurant);
+                .andExpect(header().string("location", "/restaurants/null"))
+                .andExpect(content().string("{}"));
+
+        verify(restaurantService).addRestaurant(any());
+    }
+
+    @DisplayName("4. update")
+    @Test
+    void test_4() throws Exception {
+
+        mvc.perform(MockMvcRequestBuilders.patch("/restaurants/100")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"다코기\",\"address\":\"등촌동\"}"))
+                .andExpect(status().isOk());
+
+        verify(restaurantService).updateRestaurant(100L, "다코기", "등촌동");
 
     }
 }

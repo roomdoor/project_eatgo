@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -39,15 +40,26 @@ public class RestaurantServiceTest {
 
     private void mockRestaurantRepository() {
         List<Restaurant> restaurants = new ArrayList<>();
-        Restaurant restaurant1 = new Restaurant(100L, "chicken", "Seoul");
-        restaurant1.getMenuItems().add(new MenuItem("fried"));
-        Restaurant restaurant2 = new Restaurant(200L, "zzimdark", "Seoul");
+        Restaurant restaurant1 =
+                Restaurant.builder()
+                        .id(100L)
+                        .name("chicken")
+                        .address("Seoul")
+                        .build();
+
+        restaurant1.setMenuItems(List.of(new MenuItem("fried")));
+        Restaurant restaurant2 = Restaurant.builder()
+                .id(200L)
+                .name("zzimdark")
+                .address("Seoul")
+                .build();
+
         restaurants.add(restaurant1);
         restaurants.add(restaurant2);
 
         given(restaurantRepository.findAll()).willReturn(restaurants);
-        given(restaurantRepository.findById(100L)).willReturn(restaurant1);
-        given(restaurantRepository.findById(200L)).willReturn(restaurant2);
+        given(restaurantRepository.findById(100L)).willReturn(Optional.of(restaurant1));
+        given(restaurantRepository.findById(200L)).willReturn(Optional.of(restaurant2));
     }
 
     @DisplayName("1. getRestaurant")
@@ -88,15 +100,38 @@ public class RestaurantServiceTest {
     @Test
     void test_4() {
         setUp();
-        Restaurant restaurant = new Restaurant("버거킹", "등촌점");
-        Restaurant saved = new Restaurant(1000L,"버거킹", "등촌점");
+        given(restaurantRepository.save(any())).will(invocation -> {
+            Restaurant restaurant = invocation.getArgument(0);
+            restaurant.setId(1000L);
+            return restaurant;
+        });
 
-        given(restaurantRepository.save(any())).willReturn(saved);
+        Restaurant restaurant = Restaurant.builder()
+                .name("버거킹")
+                .address("등촌점")
+                .build();
 
         Restaurant created = restaurantService.addRestaurant(restaurant);
 
-        assertThat(created.getId(),is(1000L));
+        assertThat(created.getId(), is(1000L));
 
     }
 
+    @DisplayName("5. update")
+    @Test
+    void test_5() {
+        setUp();
+        Restaurant restaurant = Restaurant.builder()
+                .id(100L)
+                .name("치킨집")
+                .address("서울")
+                .build();
+
+        given(restaurantRepository.findById(100L)).willReturn(Optional.of(restaurant));
+
+        restaurantService.updateRestaurant(100L, "다코기", "등촌동");
+
+        assertThat(restaurant.getName(), Is.is("다코기"));
+        assertThat(restaurant.getAddress(), Is.is("등촌동"));
+    }
 }
