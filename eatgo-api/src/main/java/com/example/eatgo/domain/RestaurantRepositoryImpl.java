@@ -28,4 +28,11 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
                 .findFirst()
                 .orElse(null);
     }
+
+    @Override
+    public Restaurant save(Restaurant restaurant) {
+        restaurant.setId(1000L);
+        restaurants.add(restaurant);
+        return restaurant;
+    }
 }

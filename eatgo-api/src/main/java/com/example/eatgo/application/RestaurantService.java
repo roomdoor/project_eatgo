@@ -25,11 +25,14 @@ public class RestaurantService {
 
         restaurant.addMenuItem(new MenuItem("fried"));
 
-
         return restaurant;
     }
 
     public List<Restaurant> getRestaurants() {
         return restaurantRepository.findAll();
+    }
+
+    public Restaurant addRestaurant(Restaurant restaurant) {
+        return restaurantRepository.save(restaurant);
     }
 }
