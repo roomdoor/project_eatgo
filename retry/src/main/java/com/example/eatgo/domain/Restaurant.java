@@ -1,19 +1,30 @@
 package com.example.eatgo.domain;
 
-import com.example.eatgo.repository.Menu;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@Entity
 public class Restaurant {
 
+    @Id
+    @GeneratedValue
     private Long id;
     private String name;
     private String address;
+    @Transient
     private List<Menu> menus = new ArrayList<>();
 
     public Restaurant(Long id, String name, String address) {
@@ -26,7 +37,7 @@ public class Restaurant {
         return name + " in " + address;
     }
 
-    public void addMenu(Menu menu) {
-        menus.add(menu);
+    public void setMenus(Menu menu) {
+        this.menus = new ArrayList<>(menus);
     }
 }

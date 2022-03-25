@@ -1,11 +1,11 @@
 package com.example.eatgo.service;
 
 import com.example.eatgo.domain.Restaurant;
-import com.example.eatgo.repository.Menu;
 import com.example.eatgo.repository.MenuRepository;
 import com.example.eatgo.repository.RestaurantRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -22,22 +22,23 @@ public class RestaurantService {
 
 
     public Restaurant findRestaurant(Long id) {
-        Restaurant restaurant = restaurantRepository.findById(id);
-
-        List<Menu> menus = menuRepository.findAllByRestaurantId(id);
-        restaurant.setMenus(menus);
-
-        return restaurant;
+        return restaurantRepository.findById(id).orElse(null);
     }
 
     public List<Restaurant> allRestaurants() {
-        List<Restaurant> restaurants = restaurantRepository.findAll();
+        return restaurantRepository.findAll();
+    }
 
-        for (Restaurant r : restaurants) {
-            List<Menu> menus = menuRepository.findAllByRestaurantId(r.getId());
-            r.setMenus(menus);
-        }
+    public Restaurant addRestaurant(Restaurant restaurant) {
+        return restaurantRepository.save(restaurant);
+    }
 
-        return restaurants;
+    @Transactional
+    public Restaurant updateRestaurant(Long id, String name, String address) {
+        Restaurant restaurant = restaurantRepository.findById(id).orElse(null);
+        restaurant.setName(name);
+        restaurant.setAddress(address);
+
+        return restaurant;
     }
 }

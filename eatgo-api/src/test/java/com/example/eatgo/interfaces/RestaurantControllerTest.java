@@ -129,7 +129,7 @@ public class RestaurantControllerTest {
                         .content("{\"name\":\"버거킹\",\"address\":\"등촌점\"}")
                 )
                 .andExpect(status().isCreated())
-                .andExpect(header().string("location", "/restaurants/null"))
+                .andExpect(header().string("location", "/restaurants/1000"))
                 .andExpect(content().string("{}"));
 
         verify(restaurantService).addRestaurant(any());

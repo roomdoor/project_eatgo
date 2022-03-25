@@ -14,7 +14,6 @@ import java.util.List;
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
-    private String name;
 
     public RestaurantController(RestaurantService restaurantService) {
         this.restaurantService = restaurantService;
@@ -34,12 +33,10 @@ public class RestaurantController {
     @PostMapping("/restaurants")
     public ResponseEntity<?> create(@RequestBody Restaurant resource)
             throws URISyntaxException {
-        Restaurant restaurant = Restaurant.builder()
+        Restaurant restaurant = restaurantService.addRestaurant(Restaurant.builder()
                 .name(resource.getName())
                 .address(resource.getAddress())
-                .build();
-
-        restaurantService.addRestaurant(restaurant);
+                .build());
 
         URI location = new URI("/restaurants/" + restaurant.getId());
         return ResponseEntity.created(location).body("{}");
