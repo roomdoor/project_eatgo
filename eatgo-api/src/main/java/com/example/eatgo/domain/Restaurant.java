@@ -1,15 +1,19 @@
 package com.example.eatgo.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-
-@Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -17,24 +21,19 @@ import java.util.List;
 public class Restaurant {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
+    @Setter
     private Long id;
 
+    @NotEmpty
     private String name;
+
+    @NotEmpty
     private String address;
+
     @Transient
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<MenuItem> menuItems;
-
-    public Restaurant(String name, String address) {
-        this.name = name;
-        this.address = address;
-    }
-
-    public Restaurant(Long id, String name, String address) {
-        this.id = id;
-        this.name = name;
-        this.address = address;
-    }
 
     public String getInformation() {
         return name + " in " + address;
@@ -44,9 +43,8 @@ public class Restaurant {
         this.menuItems = new ArrayList<>(menuItems);
     }
 
-    public Restaurant updateRestaurant(String name, String address) {
+    public void updateRestaurant(String name, String address) {
         this.name = name;
         this.address = address;
-        return this;
     }
 }

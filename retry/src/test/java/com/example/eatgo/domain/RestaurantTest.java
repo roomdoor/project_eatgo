@@ -28,5 +28,4 @@ public class RestaurantTest {
         assertThat(restaurant.getInfo(), is("chicken in Seoul"));
     }
 
-
 }

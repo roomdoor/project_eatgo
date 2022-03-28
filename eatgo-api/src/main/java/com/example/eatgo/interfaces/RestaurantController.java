@@ -2,10 +2,12 @@ package com.example.eatgo.interfaces;
 
 
 import com.example.eatgo.application.RestaurantService;
+import com.example.eatgo.domain.MenuItem;
 import com.example.eatgo.domain.Restaurant;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -31,7 +33,7 @@ public class RestaurantController {
     }
 
     @PostMapping("/restaurants")
-    public ResponseEntity<?> create(@RequestBody Restaurant resource)
+    public ResponseEntity<?> create(@Valid @RequestBody Restaurant resource)
             throws URISyntaxException {
         Restaurant restaurant = restaurantService.addRestaurant(Restaurant.builder()
                 .name(resource.getName())
@@ -44,9 +46,12 @@ public class RestaurantController {
 
     @PatchMapping("/restaurants/{id}")
     public String update(@PathVariable("id") Long id,
-                         @RequestBody Restaurant restaurant) {
+                         @Valid @RequestBody Restaurant restaurant) {
 
         restaurantService.updateRestaurant(id, restaurant.getName(), restaurant.getAddress());
         return "{}";
     }
+
+
+
 }

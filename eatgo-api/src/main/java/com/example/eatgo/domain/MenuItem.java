@@ -1,15 +1,17 @@
 package com.example.eatgo.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@Data
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -20,13 +22,8 @@ public class MenuItem {
     @GeneratedValue
     private Long id;
 
+    @Setter
     private Long restaurantId;
 
-    String name;
-
-    public MenuItem(String name) {
-        this.name = name;
-    }
-
-
+    private String name;
 }

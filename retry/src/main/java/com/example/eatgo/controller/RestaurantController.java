@@ -5,6 +5,7 @@ import com.example.eatgo.service.RestaurantService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -30,7 +31,7 @@ public class RestaurantController {
     }
 
     @PostMapping("/restaurants")
-    public ResponseEntity<?> addRestaurant(@RequestBody Restaurant resource)
+    public ResponseEntity<?> addRestaurant(@Valid @RequestBody Restaurant resource)
             throws URISyntaxException {
 
         Restaurant restaurant = restaurantService.addRestaurant(
@@ -44,7 +45,7 @@ public class RestaurantController {
     }
 
     @PatchMapping("/restaurants/{id}")
-    public String updateRestaurant(@PathVariable("id") Long id,
+    public String updateRestaurant(@Valid @PathVariable("id") Long id,
                                    @RequestBody Restaurant resource) {
         restaurantService.updateRestaurant(id, resource.getName(), resource.getAddress());
         return "{}";

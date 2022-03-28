@@ -1,8 +1,10 @@
 package com.example.eatgo.interfaces;
 
+import com.example.eatgo.application.MenuItemService;
 import com.example.eatgo.application.RestaurantService;
 import com.example.eatgo.domain.MenuItem;
 import com.example.eatgo.domain.Restaurant;
+import com.example.eatgo.domain.RestaurantNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +21,7 @@ import java.util.List;
 
 import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -44,7 +47,7 @@ public class RestaurantControllerTest {
                         .address("Seoul")
                         .build();
 
-        restaurant1.setMenuItems(List.of(new MenuItem("fried")));
+        restaurant1.setMenuItems(List.of(MenuItem.builder().name("fried").build()));
         Restaurant restaurant2 = Restaurant.builder()
                 .id(200L)
                 .name("zzimdark")
@@ -66,11 +69,13 @@ public class RestaurantControllerTest {
                         containsString("\"id\":200"))
                 ).andExpect(content().string(
                         containsString("\"name\":\"zzimdark\""))
+                ).andExpect(content().string(
+                        containsString("\"name\":\"fried\""))
                 )
         ;
     }
 
-    @DisplayName("2. store info")
+    @DisplayName("2. store info Exist")
     @Test
     void test_1() throws Exception {
         Restaurant restaurant1 =
@@ -78,10 +83,10 @@ public class RestaurantControllerTest {
                         .id(100L)
                         .name("chicken")
                         .address("Seoul")
-                        .menuItems(List.of(new MenuItem("fried")))
+                        .menuItems(List.of(MenuItem.builder().name("fried").build()))
                         .build();
 
-        restaurant1.setMenuItems(List.of(new MenuItem("fried")));
+        restaurant1.setMenuItems(List.of(MenuItem.builder().name("fried").build()));
         Restaurant restaurant2 = Restaurant.builder()
                 .id(200L)
                 .name("zzimdark")
@@ -111,10 +116,19 @@ public class RestaurantControllerTest {
 
     }
 
-
-    @DisplayName("3. create")
+    @DisplayName("2. store info NotExist")
     @Test
-    void test_3() throws Exception {
+    void test_1_2() throws Exception {
+        given(restaurantService.getRestaurant(404L)).willThrow(new RestaurantNotFoundException(404L));
+
+        mvc.perform(MockMvcRequestBuilders.get("/restaurants/404"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("{}"));
+    }
+
+    @DisplayName("3. create validData")
+    @Test
+    void test_3_1() throws Exception {
         given(restaurantService.addRestaurant(any())).will(invocation -> {
             Restaurant restaurant = invocation.getArgument(0);
             return Restaurant.builder()
@@ -133,6 +147,25 @@ public class RestaurantControllerTest {
                 .andExpect(content().string("{}"));
 
         verify(restaurantService).addRestaurant(any());
+    }
+
+    @DisplayName("3. create invalidData")
+    @Test
+    void test_3_2() throws Exception {
+        given(restaurantService.addRestaurant(any())).will(invocation -> {
+            Restaurant restaurant = invocation.getArgument(0);
+            return Restaurant.builder()
+                    .id(1000L)
+                    .name(restaurant.getName())
+                    .address(restaurant.getAddress())
+                    .build();
+        });
+
+        mvc.perform(MockMvcRequestBuilders.post("/restaurants")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"\",\"address\":\"\"}")
+                )
+                .andExpect(status().isBadRequest());
     }
 
     @DisplayName("4. update")

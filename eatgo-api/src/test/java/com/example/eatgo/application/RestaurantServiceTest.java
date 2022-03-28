@@ -1,10 +1,8 @@
 package com.example.eatgo.application;
 
-import com.example.eatgo.domain.MenuItem;
-import com.example.eatgo.domain.MenuItemRepository;
-import com.example.eatgo.domain.Restaurant;
-import com.example.eatgo.domain.RestaurantRepository;
+import com.example.eatgo.domain.*;
 import org.hamcrest.core.Is;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -16,6 +14,7 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -31,6 +30,7 @@ public class RestaurantServiceTest {
     @Mock
     private MenuItemRepository menuItemRepository;
 
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         mockRestaurantRepository();
@@ -47,7 +47,8 @@ public class RestaurantServiceTest {
                         .address("Seoul")
                         .build();
 
-        restaurant1.setMenuItems(List.of(new MenuItem("fried")));
+        restaurant1.setMenuItems(List.of(MenuItem.builder().name("fried").build()));
+
         Restaurant restaurant2 = Restaurant.builder()
                 .id(200L)
                 .name("zzimdark")
@@ -62,19 +63,25 @@ public class RestaurantServiceTest {
         given(restaurantRepository.findById(200L)).willReturn(Optional.of(restaurant2));
     }
 
-    @DisplayName("1. getRestaurant")
+    @DisplayName("1. getRestaurant Exist")
     @Test
     void test_1() {
-        setUp();
         Restaurant restaurant = restaurantService.getRestaurant(100L);
 
         assertThat(restaurant.getId(), is(100L));
+        assertThat(restaurant.getMenuItems().get(0).getName(), is("fried"));
     }
 
-    @DisplayName("2. getRestaurants")
+    @DisplayName("1. getRestaurant NotExist")
+    @Test
+    void test_1_1() {
+        assertThrows(RestaurantNotFoundException.class,
+                () -> restaurantService.getRestaurant(500L));
+    }
+
+    @DisplayName("2. getAllRestaurants")
     @Test
     void test_2() {
-        setUp();
         List<Restaurant> restaurants = restaurantService.getRestaurants();
 
         Restaurant restaurant = restaurants.get(0);
@@ -86,7 +93,6 @@ public class RestaurantServiceTest {
     @DisplayName("3. getMenuItem")
     @Test
     void test_3() {
-        setUp();
         Restaurant restaurant = restaurantService.getRestaurant(100L);
         assertThat(restaurant.getId(), is(100L));
 
@@ -99,7 +105,6 @@ public class RestaurantServiceTest {
     @DisplayName("4. addRestaurant")
     @Test
     void test_4() {
-        setUp();
         given(restaurantRepository.save(any())).will(invocation -> {
             Restaurant restaurant = invocation.getArgument(0);
             restaurant.setId(1000L);
@@ -120,7 +125,6 @@ public class RestaurantServiceTest {
     @DisplayName("5. update")
     @Test
     void test_5() {
-        setUp();
         Restaurant restaurant = Restaurant.builder()
                 .id(100L)
                 .name("치킨집")

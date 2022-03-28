@@ -1,6 +1,7 @@
 package com.example.eatgo.service;
 
 import com.example.eatgo.domain.Restaurant;
+import com.example.eatgo.domain.RestaurantNotFoundException;
 import com.example.eatgo.repository.MenuRepository;
 import com.example.eatgo.repository.RestaurantRepository;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class RestaurantService {
 
 
     public Restaurant findRestaurant(Long id) {
-        return restaurantRepository.findById(id).orElse(null);
+        return restaurantRepository.findById(id).orElseThrow(() -> new RestaurantNotFoundException(id));
     }
 
     public List<Restaurant> allRestaurants() {

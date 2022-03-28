@@ -2,6 +2,7 @@ package com.example.eatgo.controller;
 
 import com.example.eatgo.domain.Menu;
 import com.example.eatgo.domain.Restaurant;
+import com.example.eatgo.domain.RestaurantNotFoundException;
 import com.example.eatgo.service.RestaurantService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -59,6 +61,15 @@ public class RestaurantControllerTest {
 
     }
 
+    @DisplayName("1. /info not exist")
+    @Test
+    void test_1_1() throws Exception {
+        given(restaurantService.findRestaurant(100L)).willThrow(RestaurantNotFoundException.class);
+
+        assertThrows(RestaurantNotFoundException.class, () -> restaurantService.findRestaurant(100L));
+    }
+
+
     @DisplayName("2. /restaurants")
     @Test
     void test_2() throws Exception {
@@ -75,7 +86,7 @@ public class RestaurantControllerTest {
         ;
     }
 
-    @DisplayName("3. addRestaurants")
+    @DisplayName("3. addRestaurants NotExist")
     @Test
     void test_3() throws Exception {
         given(restaurantService.addRestaurant(any())).willReturn(Restaurant.builder()
@@ -96,7 +107,6 @@ public class RestaurantControllerTest {
                 .address("등촌점")
                 .build());
     }
-
 
     @DisplayName("5 . update")
     @Test
