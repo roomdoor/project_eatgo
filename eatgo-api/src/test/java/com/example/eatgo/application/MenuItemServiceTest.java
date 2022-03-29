@@ -40,19 +40,31 @@ public class MenuItemServiceTest {
                 .name("fried")
                 .build());
         menuItems.add(MenuItem.builder()
+                .id(2L)
                 .name("soy")
                 .build());
 
         menuItems.add(MenuItem.builder()
-                .name("soy")
+                .id(2L)
+                .name("soy2")
                 .build());
 
+        menuItems.add(MenuItem.builder()
+                .id(3L)
+                .name("seasoning")
+                .build());
+
+        menuItems.add(MenuItem.builder()
+                .id(3L)
+                .name("seasoning")
+                .remove(true)
+                .build());
 
         menuItemService.bulkUpdate(1L, menuItems);
 
 
-        verify(menuItemRepository, times(3)).save(any());
-//        verify(menuItemRepository,times(1)).deleteById(any());
+        verify(menuItemRepository, times(4)).save(any());
+        verify(menuItemRepository, times(1)).deleteById(any());
 
     }
 

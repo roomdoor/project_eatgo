@@ -5,6 +5,7 @@ import com.example.eatgo.application.RestaurantService;
 import com.example.eatgo.domain.MenuItem;
 import com.example.eatgo.domain.Restaurant;
 import com.example.eatgo.domain.RestaurantNotFoundException;
+import com.example.eatgo.domain.Review;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -40,22 +41,17 @@ public class RestaurantControllerTest {
     @Test
     public void list() throws Exception {
         List<Restaurant> restaurants = new ArrayList<>();
-        Restaurant restaurant1 =
+        Restaurant restaurant =
                 Restaurant.builder()
                         .id(100L)
                         .name("chicken")
                         .address("Seoul")
                         .build();
 
-        restaurant1.setMenuItems(List.of(MenuItem.builder().name("fried").build()));
-        Restaurant restaurant2 = Restaurant.builder()
-                .id(200L)
-                .name("zzimdark")
-                .address("Seoul")
-                .build();
+        restaurant.setMenuItems(List.of(MenuItem.builder().name("fried").build()));
+        restaurant.setReviews(List.of(Review.builder().name("sihwa").score(5).comment("good").build()));
 
-        restaurants.add(restaurant1);
-        restaurants.add(restaurant2);
+        restaurants.add(restaurant);
 
         given(restaurantService.getRestaurants()).willReturn(restaurants);
 
@@ -66,11 +62,7 @@ public class RestaurantControllerTest {
                 ).andExpect(content().string(
                         containsString("\"name\":\"chicken\""))
                 ).andExpect(content().string(
-                        containsString("\"id\":200"))
-                ).andExpect(content().string(
-                        containsString("\"name\":\"zzimdark\""))
-                ).andExpect(content().string(
-                        containsString("\"name\":\"fried\""))
+                        containsString("sihwa"))
                 )
         ;
     }

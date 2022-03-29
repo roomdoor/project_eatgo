@@ -30,12 +30,15 @@ public class RestaurantServiceTest {
     @Mock
     private MenuItemRepository menuItemRepository;
 
+    @Mock
+    ReviewRepository reviewRepository;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         mockRestaurantRepository();
 
-        restaurantService = new RestaurantService(restaurantRepository, menuItemRepository);
+        restaurantService = new RestaurantService(restaurantRepository, menuItemRepository, reviewRepository);
     }
 
     private void mockRestaurantRepository() {
