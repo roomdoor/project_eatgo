@@ -37,6 +37,7 @@ public class RestaurantService {
     @Transactional
     public Restaurant updateRestaurant(Long id, String name, String address) {
         Restaurant restaurant = restaurantRepository.findById(id).orElse(null);
+        assert restaurant != null;
         restaurant.setName(name);
         restaurant.setAddress(address);
 

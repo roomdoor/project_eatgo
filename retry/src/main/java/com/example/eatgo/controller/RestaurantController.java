@@ -24,7 +24,7 @@ public class RestaurantController {
         return restaurantService.allRestaurants();
     }
 
-    @GetMapping("restaurantInfo/{id}")
+    @GetMapping("restaurants/{id}")
     public Restaurant restaurant(@PathVariable("id") Long id) {
 
         return restaurantService.findRestaurant(id);

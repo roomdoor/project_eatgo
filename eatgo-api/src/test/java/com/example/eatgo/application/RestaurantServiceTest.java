@@ -69,7 +69,6 @@ public class RestaurantServiceTest {
         Restaurant restaurant = restaurantService.getRestaurant(100L);
 
         assertThat(restaurant.getId(), is(100L));
-        assertThat(restaurant.getMenuItems().get(0).getName(), is("fried"));
     }
 
     @DisplayName("1. getRestaurant NotExist")
@@ -95,11 +94,6 @@ public class RestaurantServiceTest {
     void test_3() {
         Restaurant restaurant = restaurantService.getRestaurant(100L);
         assertThat(restaurant.getId(), is(100L));
-
-        MenuItem menuItem = restaurant.getMenuItems().get(0);
-        assertThat(menuItem.getName(), is("fried"));
-
-
     }
 
     @DisplayName("4. addRestaurant")

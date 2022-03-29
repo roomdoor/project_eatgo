@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface MenuRepository extends CrudRepository<Menu, Long> {
     public List<Menu> findAllByRestaurantId(Long restaurantId);
+
+    public void deleteById(Long restaurantId);
 }

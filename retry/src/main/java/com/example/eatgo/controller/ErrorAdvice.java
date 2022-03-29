@@ -11,7 +11,7 @@ public class ErrorAdvice {
 
 
     @ExceptionHandler(RestaurantNotFoundException.class)
-    public ResponseEntity handleException(RestaurantNotFoundException e) {
+    public ResponseEntity<?> handleException(RestaurantNotFoundException e) {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }

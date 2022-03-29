@@ -31,19 +31,13 @@ public class Restaurant {
     private String address;
 
     @Transient
-    private List<Menu> menus = new ArrayList<>();
-
-    public Restaurant(Long id, String name, String address) {
-        this.id = id;
-        this.name = name;
-        this.address = address;
-    }
+    private List<Menu> menus;
 
     public String getInfo() {
         return name + " in " + address;
     }
 
-    public void setMenus(Menu menu) {
+    public void setMenus(List<Menu> menus) {
         this.menus = new ArrayList<>(menus);
     }
 }

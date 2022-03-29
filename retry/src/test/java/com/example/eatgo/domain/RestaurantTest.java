@@ -10,7 +10,7 @@ public class RestaurantTest {
 
     @DisplayName("1. creation")
     @Test
-    void test_1(){
+    void test_1() {
         Restaurant restaurant = new Restaurant();
         restaurant.setId(100L);
         restaurant.setName("chicken");
@@ -23,8 +23,12 @@ public class RestaurantTest {
 
     @DisplayName("2. info")
     @Test
-    void test_2(){
-        Restaurant restaurant = new Restaurant(100L, "chicken", "Seoul");
+    void test_2() {
+        Restaurant restaurant = Restaurant.builder()
+                .id(100L)
+                .name("chicken")
+                .address("Seoul")
+                .build();
         assertThat(restaurant.getInfo(), is("chicken in Seoul"));
     }
 

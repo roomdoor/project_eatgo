@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,14 +22,13 @@ public class RestaurantController {
         this.restaurantService = restaurantService;
     }
 
-
     @GetMapping("/restaurants")
     public List<Restaurant> list() {
         return restaurantService.getRestaurants();
     }
 
     @GetMapping("/restaurants/{id}")
-    public Restaurant info(@PathVariable("id") Long id) {
+    public Restaurant detail(@PathVariable("id") Long id) {
         return restaurantService.getRestaurant(id);
     }
 
@@ -51,7 +51,4 @@ public class RestaurantController {
         restaurantService.updateRestaurant(id, restaurant.getName(), restaurant.getAddress());
         return "{}";
     }
-
-
-
 }

@@ -38,13 +38,21 @@ public class RestaurantControllerTest {
     @DisplayName("1. /info")
     @Test
     void test_1() throws Exception {
-        Restaurant restaurant1 = new Restaurant(100L, "chicken", "Seoul");
-        restaurant1.getMenus().add(new Menu("fried"));
-        Restaurant restaurant2 = new Restaurant(200L, "zzimdark", "Seoul");
+        Restaurant restaurant1 = Restaurant.builder()
+                .id(100L)
+                .name("chicken")
+                .address("Seoul")
+                .build();
+        restaurant1.setMenus(List.of(Menu.builder().menuName("fried").build()));
+        Restaurant restaurant2 = Restaurant.builder()
+                .id(200L)
+                .name("zzimdark")
+                .address("Seoul")
+                .build();
         given(restaurantService.findRestaurant(100L)).willReturn(restaurant1);
         given(restaurantService.findRestaurant(200L)).willReturn(restaurant2);
 
-        mvc.perform(MockMvcRequestBuilders.get("/restaurantInfo/100"))
+        mvc.perform(MockMvcRequestBuilders.get("/restaurants/100"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("\"id\":100")))
                 .andExpect(content().string(containsString("\"name\":\"chicken\"")))
@@ -52,7 +60,7 @@ public class RestaurantControllerTest {
                 .andExpect(content().string(containsString("fried")))
         ;
 
-        mvc.perform(MockMvcRequestBuilders.get("/restaurantInfo/200"))
+        mvc.perform(MockMvcRequestBuilders.get("/restaurants/200"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("\"id\":200")))
                 .andExpect(content().string(containsString("\"name\":\"zzimdark\"")))
@@ -74,7 +82,11 @@ public class RestaurantControllerTest {
     @Test
     void test_2() throws Exception {
         List<Restaurant> restaurants = new ArrayList<>();
-        restaurants.add(new Restaurant(100L, "chicken", "Seoul"));
+        restaurants.add(Restaurant.builder()
+                .id(100L)
+                .name("chicken")
+                .address("Seoul")
+                .build());
 
         given(restaurantService.allRestaurants()).willReturn(restaurants);
 

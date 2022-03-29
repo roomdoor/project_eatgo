@@ -31,7 +31,7 @@ public class MenuItemControllerTest {
     @DisplayName("1 . bulk update Menu")
     @Test
     void test_1() throws Exception {
-//        given()
+
         mvc.perform(MockMvcRequestBuilders.patch("/restaurants/1/menuItems")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("[{\"name\":\"fried\"}]"))
