@@ -1,4 +1,8 @@
 rootProject.name = 'eatgo'
 
-include 'eatgo-api'
+include 'eatgo-common'
+include 'eatgo-admin-api'
 include 'retry'
+include 'eatgo-common'
+include 'eatgo-customer-api'
+
