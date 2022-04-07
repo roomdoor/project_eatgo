@@ -40,6 +40,7 @@ public class RestaurantServiceTest {
         Restaurant restaurant1 =
                 Restaurant.builder()
                         .id(100L)
+                        .categoryId(1L)
                         .name("chicken")
                         .address("Seoul")
                         .build();
@@ -47,6 +48,7 @@ public class RestaurantServiceTest {
 
         Restaurant restaurant2 = Restaurant.builder()
                 .id(200L)
+                .categoryId(1L)
                 .name("zzimdark")
                 .address("Seoul")
                 .build();
@@ -104,6 +106,7 @@ public class RestaurantServiceTest {
         });
 
         Restaurant restaurant = Restaurant.builder()
+                .categoryId(1L)
                 .name("버거킹")
                 .address("등촌점")
                 .build();
@@ -119,6 +122,7 @@ public class RestaurantServiceTest {
     void test_5() {
         Restaurant restaurant = Restaurant.builder()
                 .id(100L)
+                .categoryId(1L)
                 .name("치킨집")
                 .address("서울")
                 .build();

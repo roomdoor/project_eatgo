@@ -42,6 +42,7 @@ public class RestaurantControllerTest {
         Restaurant restaurant =
                 Restaurant.builder()
                         .id(100L)
+                        .categoryId(1L)
                         .name("chicken")
                         .address("Seoul")
                         .build();
@@ -66,12 +67,14 @@ public class RestaurantControllerTest {
         Restaurant restaurant1 =
                 Restaurant.builder()
                         .id(100L)
+                        .categoryId(1L)
                         .name("chicken")
                         .address("Seoul")
                         .build();
 
         Restaurant restaurant2 = Restaurant.builder()
                 .id(200L)
+                .categoryId(1L)
                 .name("zzimdark")
                 .address("Seoul")
                 .build();
@@ -115,14 +118,16 @@ public class RestaurantControllerTest {
             Restaurant restaurant = invocation.getArgument(0);
             return Restaurant.builder()
                     .id(1000L)
+                    .categoryId(1L)
                     .name(restaurant.getName())
                     .address(restaurant.getAddress())
                     .build();
         });
 
+//        {"name":"버거킹","address":"등촌점","categoryId":1}
         mvc.perform(MockMvcRequestBuilders.post("/restaurants")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"버거킹\",\"address\":\"등촌점\"}")
+                        .content("{\"name\":\"버거킹\",\"address\":\"등촌점\",\"categoryId\":1}")
                 )
                 .andExpect(status().isCreated())
                 .andExpect(header().string("location", "/restaurants/1000"))
@@ -138,6 +143,7 @@ public class RestaurantControllerTest {
             Restaurant restaurant = invocation.getArgument(0);
             return Restaurant.builder()
                     .id(1000L)
+                    .categoryId(1L)
                     .name(restaurant.getName())
                     .address(restaurant.getAddress())
                     .build();
@@ -145,7 +151,7 @@ public class RestaurantControllerTest {
 
         mvc.perform(MockMvcRequestBuilders.post("/restaurants")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"\",\"address\":\"\"}")
+                        .content("{\"name\":\"\",\"categoryId\":,\"address\":\"\"}")
                 )
                 .andExpect(status().isBadRequest());
     }
@@ -156,7 +162,7 @@ public class RestaurantControllerTest {
 
         mvc.perform(MockMvcRequestBuilders.patch("/restaurants/100")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"다코기\",\"address\":\"등촌동\"}"))
+                        .content("{\"name\":\"다코기\",\"address\":\"등촌동\",\"categoryId\":1}"))
                 .andExpect(status().isOk());
 
         verify(restaurantService).updateRestaurant(100L, "다코기", "등촌동");

@@ -1,6 +1,5 @@
 package com.example.eatgo.application;
 
-import com.example.eatgo.application.RestaurantService;
 import com.example.eatgo.domain.*;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,6 +46,7 @@ public class RestaurantServiceTest {
         Restaurant restaurant1 =
                 Restaurant.builder()
                         .id(100L)
+                        .categoryId(1L)
                         .name("chicken")
                         .address("Seoul")
                         .build();
@@ -56,6 +56,7 @@ public class RestaurantServiceTest {
 
         Restaurant restaurant2 = Restaurant.builder()
                 .id(200L)
+                .categoryId(1L)
                 .name("zzimdark")
                 .address("Seoul")
                 .build();
@@ -63,7 +64,7 @@ public class RestaurantServiceTest {
         restaurants.add(restaurant1);
         restaurants.add(restaurant2);
 
-        given(restaurantRepository.findAll()).willReturn(restaurants);
+        given(restaurantRepository.findAllByAddressContainingAndCategoryId("Seoul",1L)).willReturn(restaurants);
         given(restaurantRepository.findById(100L)).willReturn(Optional.of(restaurant1));
         given(restaurantRepository.findById(200L)).willReturn(Optional.of(restaurant2));
 
@@ -72,7 +73,8 @@ public class RestaurantServiceTest {
     @DisplayName("1. getRestaurant Exist")
     @Test
     void test_1() {
-        var restaurants = restaurantService.getRestaurants();
+        String region = "Seoul";
+        var restaurants = restaurantService.getRestaurants(region, 1L);
         var restaurant = restaurants.get(0);
 
 //        var restaurant = restaurantService.getRestaurant(100L);
@@ -93,7 +95,7 @@ public class RestaurantServiceTest {
     @DisplayName("2. getAllRestaurants")
     @Test
     void test_2() {
-        List<Restaurant> restaurants = restaurantService.getRestaurants();
+        List<Restaurant> restaurants = restaurantService.getRestaurants("Seoul", 1L);
 
         Restaurant restaurant = restaurants.get(0);
         assertThat(restaurant.getId(), Is.is(100L));

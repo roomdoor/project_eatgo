@@ -1,11 +1,9 @@
-package domain;
+package com.example.eatgo.domain;
 
-import com.example.eatgo.domain.Restaurant;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 
 
 class RestaurantTest {

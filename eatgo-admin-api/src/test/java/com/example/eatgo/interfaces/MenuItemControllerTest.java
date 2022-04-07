@@ -16,12 +16,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -49,4 +52,16 @@ public class MenuItemControllerTest {
         verify(menuItemService).bulkUpdate(eq(1L), any());
     }
 
+    @DisplayName("2. getMenuItems")
+    @Test
+    public void test_2() throws Exception {
+        List<MenuItem> menuItems = new ArrayList<>();
+        menuItems.add(MenuItem.builder().name("fried").build());
+        given(menuItemService.getMenuItems(1L)).willReturn(menuItems);
+
+        mvc.perform(MockMvcRequestBuilders.get("/restaurants/1/menuItems"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("fried")))
+        ;
+    }
 }

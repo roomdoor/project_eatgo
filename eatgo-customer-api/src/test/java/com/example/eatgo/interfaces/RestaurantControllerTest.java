@@ -45,6 +45,7 @@ public class RestaurantControllerTest {
         Restaurant restaurant =
                 Restaurant.builder()
                         .id(100L)
+                        .categoryId(1L)
                         .name("chicken")
                         .address("Seoul")
                         .build();
@@ -54,9 +55,9 @@ public class RestaurantControllerTest {
 
         restaurants.add(restaurant);
 
-        given(restaurantService.getRestaurants()).willReturn(restaurants);
+        given(restaurantService.getRestaurants("Seoul", 1L)).willReturn(restaurants);
 
-        mvc.perform(MockMvcRequestBuilders.get("/restaurants"))
+        mvc.perform(MockMvcRequestBuilders.get("/restaurants?region=Seoul&categoryId=1"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"id\":100"))
